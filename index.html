@@ -232,6 +232,7 @@ Silakan sebutkan kota tujuan ya 💖
     data = [...produk];
   }
 
+  
   // =========================
   // DETAIL PRODUK
   // =========================
@@ -582,6 +583,14 @@ function tampilProduk(p, judul = ""){
     
     <br>
 
+    <br><br>
+📋 Data Pembeli:<br><br>
+
+<input type="text" id="nama_${p.nama}" placeholder="Nama" style="width:100%;margin-bottom:5px;padding:5px;">
+<input type="text" id="alamat_${p.nama}" placeholder="Alamat" style="width:100%;margin-bottom:5px;padding:5px;">
+<input type="text" id="kota_${p.nama}" placeholder="Kota (contoh: Palembang)" style="width:100%;margin-bottom:5px;padding:5px;">
+<input type="text" id="hp_${p.nama}" placeholder="No WhatsApp" style="width:100%;margin-bottom:5px;padding:5px;">
+
    <button 
 onclick="beliProduk('${p.nama.replace(/'/g,"\\'")}', ${p.harga}, '${p.gambar}')"
 style="
@@ -613,16 +622,15 @@ function beliProduk(nama, harga, gambar){
   }
 
   // INPUT ALAMAT
-  let alamat = prompt("Masukkan alamat lengkap (Nama, Jalan, Kota, No HP):");
+  let namaPembeli = document.getElementById("nama_" + nama).value;
+let alamat = document.getElementById("alamat_" + nama).value;
+let kotaInput = document.getElementById("kota_" + nama).value;
+let hp = document.getElementById("hp_" + nama).value;
 
-  if(!alamat || alamat.trim() === ""){
-    alert("Alamat wajib diisi!");
-    return;
-  }
-
-  let qty = pilihan[nama]?.qty || 1;
-  let ukuran = pilihan[nama].ukuran;
-  let bayar = pilihan[nama]?.bayar || '-';
+if(!namaPembeli || !alamat || !kotaInput || !hp){
+  alert("Lengkapi data pembeli!");
+  return;
+}
 
   // =========================
   // AUTO ONGKIR
@@ -655,16 +663,15 @@ Saya ingin memesan produk:
 🧮 Jumlah: ${qty}
 💳 Metode Pembayaran: ${bayar}
 
-📍 Alamat Lengkap:
-${alamat}
+👤 Nama: ${namaPembeli}
+📍 Alamat: ${alamat}
+🏙️ Kota: ${kotaInput}
+📞 No HP: ${hp}
 
 🚚 Ongkir: Rp ${ongkir.toLocaleString()}
 ⏱ Estimasi: ${estimasi}
 
 💰 Total Bayar: Rp ${total.toLocaleString()}
-
-📷 Link Foto:
-http://localhost:8888/WEBBUTIK/${gambar}
 `;
 
 let noAdmin = "6288706979521"; // nomor admin (WA aktif)
@@ -980,14 +987,10 @@ h2{
   </div>
 </div>
 
-<div class="brand-center">
-  <img src="logo.jpeg" alt="logo besar">
-  <h1>N'B'O PRABUMULIH</h1>
-</div>
 
 <div class="hero-text">
   <h2>Tampil Cantik, Elegan & Percaya Diri Setiap Hari ✨</h2>
-  <p>Dapatkan koleksi fashion wanita modern & muslimah dengan kualitas terbaik, model terbaru, dan harga terjangkau hanya di N'B'O PRABUMULIH 💖</p>
+  <p>Dapatkan koleksi fashion wanita modern & muslimah dengan kualitas terbaik, model terbaru, dan harga terjangkau hanya di N'B'O PRABUMULIH</p>
 
   <div class="btn-group">
     <a href="https://wa.me/6288706979521" class="btn wa-btn">Chat WhatsApp</a>
