@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+
+let produk = [];
+
+// =========================
+// LOAD DATA
+// =========================
+document.addEventListener("DOMContentLoaded", function(){
+
+  const toggle = document.getElementById("chatbot-toggle");
+  const box = document.getElementById("chatbot-box");
+
+  // 🔥 FIX klik chatbot
+  toggle.addEventListener("click", () => {
+    box.style.display = box.style.display === "flex" ? "none" : "flex";
+  });
+
+  fetch("get_produk.php")
+    .then(res => res.json())
+    .then(data => {
+      produk = data;
+    })
+    .catch(err => console.log(err));
+
+});
+
+const ongkirData = {
+  "jakarta": { ongkir: 20000, estimasi: "2-3 hari" },
+  "bandung": { ongkir: 18000, estimasi: "2-3 hari" },
+  "palembang": { ongkir: 10000, estimasi: "1-2 hari" },
+  "lampung": { ongkir: 15000, estimasi: "2-3 hari" },
+  "surabaya": { ongkir: 25000, estimasi: "3-4 hari" },
+  "medan": { ongkir: 30000, estimasi: "4-5 hari" }
+};
+
+function deteksiKota(alamat){
+  alamat = alamat.toLowerCase();
+
+  // normalisasi
+  alamat = alamat.replace(/\s+/g, " ");
+
+  // mapping kata ke kota
+  if(alamat.includes("prabumulih")) return "palembang";
+  if(alamat.includes("plg")) return "palembang";
+  if(alamat.includes("jakarta")) return "jakarta";
+  if(alamat.includes("bandung")) return "bandung";
+  if(alamat.includes("lampung")) return "lampung";
+  if(alamat.includes("medan")) return "medan";
+  if(alamat.includes("surabaya")) return "surabaya";
+  if(alamat.includes("muara enim")) return "muara enim";
+
+  // fallback loop
+  for(let kota in ongkirData){
+    if(alamat.includes(kota)){
+      return kota;
+    }
+  }
+
+  return null;
+}
+// =========================
+// CHATBOT
+// =========================
+async function getBotResponse(input){
+
+  input = input.toLowerCase();
+
+  if(produk.length === 0){
+    return "⏳ Data produk masih dimuat...";
+  }
+
+  // =========================
+// ONGKIR & ESTIMASI
+// =========================
+if(
+  input.includes("ongkir") ||
+  input.includes("kirim ke") ||
+  input.includes("berapa ongkir") ||
+  input.includes("estimasi")
+){
+
+  let kotaDitemukan = null;
+
+  for(let kota in ongkirData){
+    if(input.includes(kota)){
+      kotaDitemukan = kota;
+      break;
+    }
+  }
+
+  if(kotaDitemukan){
+    let data = ongkirData[kotaDitemukan];
+
+    return `
+📦 Ongkir ke ${kotaDitemukan.toUpperCase()}:<br><br>
+
+💰 Ongkir: Rp ${data.ongkir.toLocaleString()}<br>
+⏱ Estimasi: ${data.estimasi}<br><br>
+
+Pengiriman dari Prabumulih ya kak 😊
+    `;
+  }
+
+  return `
+📦 Ongkir tergantung kota tujuan ya kak 😊<br><br>
+
+Contoh:<br>
+• Ongkir ke Palembang<br>
+• Ongkir ke Jakarta<br><br>
+
+Silakan sebutkan kota tujuan ya 💖
+  `;
+}
+  // =========================
+  // SAPAAN
+  // =========================
+  if(input.includes("halo") || input.includes("hai") || input.includes("hi")){
+    return "Halo kak 👋 Ada yang bisa dibantu? 😊";
+  }
+
+  // =========================
+  // PRODUK TIDAK DIJUAL
+  // =========================
+  if(input.includes("tanktop") || input.includes("kaos dalam")){
+    return "❌ Maaf kak, kami tidak menjual produk tersebut 🙏";
+  }
+
+  // =========================
+  // DETEKSI KATEGORI (FIX TOTAL)
+  // =========================
+  let kategori = null;
+
+  if(input.includes("couple") || input.includes("pasangan")){
+    kategori = "couple";
+  }
+  else if(input.includes("gamis")){
+    kategori = "gamis";
+  }
+  else if(input.includes("blouse")){
+    kategori = "blouse";
+  }
+  else if(input.includes("daster")){
+    kategori = "daster";
+  }
+  else if(input.includes("tunik")){
+    kategori = "tunik";
+  }
+  else if(input.includes("baju")){
+    kategori = "baju";
+  }
+
+  let data = kategori 
+    ? produk.filter(p => p.nama.toLowerCase().includes(kategori))
+    : [...produk];
+
+  // 🔥 FIX biar tidak kosong
+  if(data.length === 0){
+    data = [...produk];
+  }
+
+  // =========================
+  // DETAIL PRODUK
+  // =========================
+  let detail = produk.find(p => input.includes(p.nama.toLowerCase()));
+  if(detail){
+    return tampilProduk(detail, "📦 Detail Produk");
+  }
+
+  // =========================
+  // STOK
+  // =========================
+  if(input.includes("stok")){
+    let hasil = "📦 Stok Produk:<br><br>";
+    data.forEach(p=>{
+      hasil += `${p.nama} : ${p.stok}<br>`;
+    });
+    return hasil;
+  }
+
+  // =========================
+  // TERMURAH
+  // =========================
+  if(input.includes("termurah") || input.includes("murah")){
+    let p = [...data].sort((a,b)=>a.harga - b.harga)[0];
+    return tampilProduk(p, "💰 Produk Termurah");
+  }
+
+  // =========================
+  // TERMAHAL
+  // =========================
+  if(input.includes("termahal") || input.includes("mahal")){
+    let p = [...data].sort((a,b)=>b.harga - a.harga)[0];
+    return tampilProduk(p, "🔥 Produk Termahal");
+  }
+
+  // =========================
+  // PALING LARIS
+  // =========================
+  if(input.includes("laris")){
+    let p = [...data].sort((a,b)=>b.stok - a.stok)[0];
+    return tampilProduk(p, "🔥 Produk Paling Laris");
+  }
+
+  // =========================
+  // REKOMENDASI
+  // =========================
+  if(input.includes("rekomendasi") || input.includes("bagus") || input.includes("cantik")){
+    let html = `<b>🔥 Rekomendasi Produk:</b><br><br>`;
+    data.slice(0,3).forEach(p=>{
+      html += tampilProduk(p);
+    });
+    return html;
+  }
+
+  // =========================
+  // HARGA
+  // =========================
+  if(input.includes("harga")){
+    let hasil = "💰 Daftar Harga:<br><br>";
+    data.forEach(p=>{
+      hasil += `${p.nama} - Rp ${parseInt(p.harga).toLocaleString()}<br>`;
+    });
+    return hasil;
+  }
+
+  // =========================
+  // JUAL APA
+  // =========================
+  if(input.includes("jual apa")){
+    return `
+    🛍️ Kami menjual:<br><br>
+    👗 Baju Rajut<br>
+    👗 Gamis<br>
+    👗 Gamis Couple<br>
+    👗 Blouse<br>
+    👗 Daster<br>
+    👗 Tunik<br>
+    `;
+  }
+
+ // =========================
+// PEMBAYARAN + ADMIN
+// =========================
+if(
+  input.includes("pembayaran") ||
+  input.includes("bayar") ||
+  input.includes("metode pembayaran") ||
+  input.includes("transfer") ||
+  input.includes("cara bayar")
+){
+  return `
+💳 Metode Pembayaran:<br><br>
+
+✔ Transfer Bank (BCA / BRI / Mandiri)<br>
+✔ E-Wallet (Dana / OVO / GoPay / ShopeePay)<br><br>
+
+📌 Setelah pembayaran, kirim bukti ya kak 😊<br><br>
+
+👇 Untuk pembayaran & pemesanan langsung hubungi admin:<br><br>
+
+<a href="https://wa.me/6285377682299?text=Halo kak saya mau order produk"
+target="_blank"
+style="
+  display:inline-block;
+  background:#25D366;
+  color:white;
+  padding:10px 15px;
+  border-radius:20px;
+  text-decoration:none;
+">
+📲 Chat Admin WhatsApp
+</a>
+  `;
+}
+
+// =========================
+// PENGIRIMAN
+// =========================
+if(
+  input.includes("pengiriman") ||
+  input.includes("dikirim dari") ||
+  input.includes("dari mana") ||
+  input.includes("asal toko") ||
+  input.includes("alamat toko")
+){
+  return `
+📦 Pengiriman Produk:<br><br>
+
+Produk kami dikirim langsung dari:<br>
+📍 Prabumulih, Sumatera Selatan<br><br>
+
+Kami menggunakan jasa pengiriman seperti:<br>
+✔ JNE<br>
+✔ J&T<br>
+✔ SiCepat<br><br>
+
+Estimasi pengiriman tergantung lokasi tujuan ya kak 😊
+  `;
+}
+
+// =========================
+// SYARAT & KETENTUAN
+// =========================
+if(
+  input.includes("syarat") ||
+  input.includes("ketentuan") ||
+  input.includes("syarat dan ketentuan") ||
+  input.includes("aturan pembelian")
+){
+  return `
+📜 <b>Syarat & Ketentuan Pembelian:</b><br><br>
+
+1. 🛍️ Pembelian dilakukan melalui WhatsApp yang ada di website.<br>
+2. 💳 Pembayaran wajib dilakukan sebelum pengiriman (kecuali COD).<br>
+3. 📦 Pesanan akan diproses setelah pembayaran dikonfirmasi.<br>
+4. ⏱ Pengiriman sesuai estimasi dari jasa ekspedisi.<br>
+5. ❌ Barang yang sudah dibeli tidak dapat ditukar/dikembalikan (kecuali cacat).<br>
+6. 📸 Wajib menyertakan video unboxing untuk klaim komplain.<br>
+7. 📍 Pastikan alamat pengiriman sudah benar.<br><br>
+
+Terima kasih sudah berbelanja di N'B'O PRABUMULIH 💖
+  `;
+}
+
+// =========================
+// JAM OPERASIONAL
+// =========================
+if(
+  input.includes("jam buka") ||
+  input.includes("jam tutup") ||
+  input.includes("buka jam") ||
+  input.includes("tutup jam") ||
+  input.includes("jam operasional")
+){
+  return `
+🕒 <b>Jam Operasional N'B'O PRABUMULIH:</b><br><br>
+
+📅 Senin - Sabtu : 09.00 - 21.00 WIB<br>
+📅 Minggu : 10.00 - 18.00 WIB<br><br>
+
+💬 Pemesanan online bisa kapan saja,<br>
+namun akan dibalas sesuai jam operasional ya kak 😊
+  `;
+}
+
+// =========================
+// ALAMAT TOKO
+// =========================
+if(
+  input.includes("alamat") ||
+  input.includes("lokasi toko") ||
+  input.includes("alamat toko") ||
+  input.includes("dimana lokasi")
+){
+  return `
+📍 <b>Alamat Toko N'B'O PRABUMULIH:</b><br><br>
+
+🏠 Jl. Beringin No. 01, RT 02 / RW 03<br>
+Kel. Anak Petai, Kec. Prabumulih Utara<br>
+Kota Prabumulih, Sumatera Selatan<br>
+📌 Dekat Masjid Al-Istiqomah<br><br>
+
+👇 Klik untuk buka di Google Maps:<br><br>
+
+<a href="https://maps.app.goo.gl/8jEQ5P9GZBHzp7FG8?g_st=aw"
+target="_blank"
+style="
+display:inline-block;
+background:#ff4da6;
+color:white;
+padding:10px 15px;
+border-radius:20px;
+text-decoration:none;
+">
+📍 Lihat Lokasi
+</a><br><br>
+
+💬 Bisa langsung hubungi admin jika butuh panduan lokasi ya kak 😊
+  `;
+}
+
+
+  // =========================
+  // DEFAULT
+  // =========================
+  return `
+  😅 Maaf kak, aku belum paham<br><br>
+  Coba tanya seperti:<br>
+  • rekomendasi blouse<br>
+  • gamis termurah<br>
+  • stok baju<br>
+  • detail baju 3<br>
+  • tunik termahal
+  `;
+}
+
+
+let pilihan = {};
+
+function pilihUkuran(nama, ukuran){
+  if(!pilihan[nama]){
+    pilihan[nama] = {};
+  }
+  pilihan[nama].ukuran = ukuran;
+
+  console.log("Ukuran dipilih:", nama, ukuran);
+}
+
+function pilihQty(nama, qty){
+  if(!pilihan[nama]){
+    pilihan[nama] = {};
+  }
+  pilihan[nama].qty = qty;
+}
+
+function pilihBayar(nama, metode){
+  if(!pilihan[nama]) pilihan[nama] = {};
+  pilihan[nama].bayar = metode;
+}
+
+// =========================
+// KIRIM CHAT
+// =========================
+function sendMessage(){
+
+  const inputField = document.getElementById("user-input");
+  const chatContent = document.getElementById("chat-content");
+
+  let input = inputField.value;
+
+  if(!input.trim()) return;
+
+  chatContent.innerHTML += `<div><b>Kamu:</b> ${input}</div>`;
+
+  inputField.value = "";
+
+  getBotResponse(input)
+    .then(res => {
+      chatContent.innerHTML += `<div><b>Bot:</b><br>${res}</div>`;
+      chatContent.scrollTop = chatContent.scrollHeight;
+    })
+    .catch(err => {
+      chatContent.innerHTML += `<div><b>Bot:</b> ❌ Terjadi error</div>`;
+      console.log(err);
+    });
+}
+
+
+// =========================
+// ENTER = KIRIM
+// =========================
+document.addEventListener("DOMContentLoaded", function(){
+  document.getElementById("user-input").addEventListener("keypress", function(e){
+    if(e.key === "Enter"){
+      sendMessage();
+    }
+  });
+});
+
+function tampilProduk(p, judul = ""){
+
+  let ukuranHTML = "";
+
+  if(p.ukuran){
+    ukuranHTML = p.ukuran.split(",").map(u => 
+      `<button onclick="pilihUkuran('${p.nama}','${u}')">${u}</button>`
+    ).join(" ");
+  }
+
+  return `
+  ${judul ? `<b>${judul}</b><br><br>` : ""}
+
+  <div style="border:1px solid #ddd;padding:10px;border-radius:10px;margin-bottom:10px">
+    
+    <img src="${p.gambar}" style="width:100%;border-radius:10px;margin-bottom:10px">
+
+    <b>${p.nama}</b><br>
+    💰 Rp ${parseInt(p.harga).toLocaleString()}<br><br>
+
+    📄 ${p.deskripsi}<br><br>
+
+    📏 Ukuran:<br>
+    ${ukuranHTML}<br><br>
+
+    📦 Stok: ${p.stok}<br><br>
+
+    🧮 Jumlah:
+    <div style="margin-top:5px;">
+      <button onclick="pilihQty('${p.nama}',1)">1</button>
+      <button onclick="pilihQty('${p.nama}',2)">2</button>
+      <button onclick="pilihQty('${p.nama}',3)">3</button>
+      <button onclick="pilihQty('${p.nama}',4)">4</button>
+      <button onclick="pilihQty('${p.nama}',5)">5</button>
+    </div>
+    <br>
+    <br><br>
+
+💳 Pilih Metode Pembayaran:<br>
+<button onclick="pilihBayar('${p.nama}','Transfer')">Transfer</button>
+<button onclick="pilihBayar('${p.nama}','Dana')">Dana</button>
+<button onclick="pilihBayar('${p.nama}','OVO')">OVO</button>
+<button onclick="pilihBayar('${p.nama}','GoPay')">GoPay</button>
+<button onclick="pilihBayar('${p.nama}','COD')">COD</button>
+
+<br><br>
+📌 Dipilih: ${pilihan[p.nama]?.bayar || '-'}<br>
+
+    
+    <br>
+
+   <button 
+onclick="beliProduk('${p.nama.replace(/'/g,"\\'")}', ${p.harga}, '${p.gambar}')"
+style="
+background:#25D366;
+color:white;
+padding:8px 15px;
+border-radius:20px;
+border:none;
+cursor:pointer;
+">
+🛒 Beli Sekarang
+</button>
+
+  </div>
+  `;
+}
+
+function beliProduk(nama, harga, gambar){
+
+  // VALIDASI
+  if(!pilihan[nama] || !pilihan[nama].ukuran){
+    alert('Pilih ukuran dulu!');
+    return;
+  }
+
+  if(!pilihan[nama]?.bayar){
+    alert('Pilih metode pembayaran dulu!');
+    return;
+  }
+
+  // INPUT ALAMAT
+  let alamat = prompt("Masukkan alamat lengkap (Nama, Jalan, Kota, No HP):");
+
+  if(!alamat || alamat.trim() === ""){
+    alert("Alamat wajib diisi!");
+    return;
+  }
+
+  let qty = pilihan[nama]?.qty || 1;
+  let ukuran = pilihan[nama].ukuran;
+  let bayar = pilihan[nama]?.bayar || '-';
+
+  // =========================
+  // AUTO ONGKIR
+  // =========================
+  let kota = deteksiKota(alamat);
+
+  let ongkir = 0;
+  let estimasi = "-";
+
+  if(kota && ongkirData[kota]){
+    ongkir = ongkirData[kota].ongkir;
+    estimasi = ongkirData[kota].estimasi;
+  } else {
+    alert("Kota tidak dikenali, ongkir default Rp 20.000");
+    ongkir = 20000;
+    estimasi = "2-4 hari";
+  }
+
+  let total = (harga * qty) + ongkir;
+
+  // =========================
+  // WHATSAPP
+  // =========================
+  let text = `Halo Admin N'BO Prabumulih 👋
+
+Saya ingin memesan produk:
+
+🛍️ Produk: ${nama}
+📏 Ukuran: ${ukuran}
+🧮 Jumlah: ${qty}
+💳 Metode Pembayaran: ${bayar}
+
+📍 Alamat Lengkap:
+${alamat}
+
+🚚 Ongkir: Rp ${ongkir.toLocaleString()}
+⏱ Estimasi: ${estimasi}
+
+💰 Total Bayar: Rp ${total.toLocaleString()}
+
+📷 Link Foto:
+http://localhost:8888/WEBBUTIK/${gambar}
+`;
+
+let noAdmin = "6288706979521"; // nomor admin (WA aktif)
+
+let url = `https://wa.me/${noAdmin}?text=${encodeURIComponent(text)}`;
+
+// 🔥 WAJIB pakai ini (bukan window.open)
+window.location.href = url;
+}
+
+</script>
+  <title>N'B'O PRABUMULIH</title>
+  <style>
+    
+body {margin:0;font-family:Arial;background:#fff0f5;}
+
+header{background:#ff4da6;color:#fff;padding:10px;text-align:center;font-weight:bold;}
+
+.navbar{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:#fff;}
+
+.logo{display:flex;align-items:center;gap:10px;}
+
+.logo img{width:50px;height:50px;border-radius:50%;object-fit:cover;}
+
+.brand-center{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;background:#ffe4ec;}
+
+.brand-center img{width:150px;height:150px;border-radius:50%;object-fit:cover;border:5px solid #ff4da6;box-shadow:0 4px 10px rgba(0,0,0,0.2);} 
+
+.brand-center h1{margin-top:10px;color:#ff1493;font-size:28px;}
+
+.menu a{margin:0 10px;text-decoration:none;color:#ff4da6;font-weight:bold;}
+
+/* CHATBOT STYLE */
+#chatbot-container{
+  position:fixed;
+  bottom:20px;
+  left:20px;
+  z-index:9999;
+}
+
+#chatbot-toggle{
+  background:#ff4da6;
+  color:#fff;
+  padding:15px;
+  border-radius:50%;
+  cursor:pointer;
+  box-shadow:0 4px 10px rgba(0,0,0,0.2);
+}
+
+#chatbot-box{
+  width:300px;
+  height:400px;
+  background:#fff;
+  border-radius:15px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.2);
+  display:none;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+.chat-header{
+  background:#ff4da6;
+  color:#fff;
+  padding:10px;
+  text-align:center;
+  font-weight:bold;
+}
+
+#chat-content{
+  flex:1;
+  padding:10px;
+  overflow-y:auto;
+  font-size:14px;
+}
+
+.chat-input{
+  display:flex;
+  border-top:1px solid #ddd;
+}
+
+.chat-input input{
+  flex:1;
+  padding:10px;
+  border:none;
+}
+
+.chat-input button{
+  background:#ff4da6;
+  color:#fff;
+  border:none;
+  padding:10px;
+  cursor:pointer;
+}
+
+.hero-text{
+  max-width:500px;
+  text-align:center;
+  margin:auto;
+  padding:10px;
+}
+
+.hero-text h2{
+  color:#ff1493;
+  font-size:24px;
+}
+
+.btn-group{
+  display:flex;
+  justify-content:center;
+  gap:15px;
+  margin-top:20px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  padding:12px 20px;
+  border:none;
+  border-radius:25px;
+  text-decoration:none;
+  color:#fff;
+  font-weight:bold;
+}
+
+.wa-btn{background:#25D366;}
+.fb-btn{background:#1877F2;}
+
+.btn:hover{
+  transform:scale(1.05);
+  transition:0.3s;
+}
+
+/* 🔥 SCROLL SAMPING */
+.kategori{
+  display:flex;
+  overflow-x:auto;
+  gap:15px;
+  padding:20px;
+  scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;
+}
+
+.kategori::-webkit-scrollbar{
+  display:none;
+}
+
+.card{
+  background:#fff;
+  padding:10px; /* lebih kecil biar tidak kosong */
+  border-radius:10px;
+  text-align:center;
+  box-shadow:0 2px 5px rgba(0,0,0,0.1);
+  min-width:160px; /* lebih pas */
+  max-width:180px; /* biar tidak melebar */
+  flex:0 0 auto;
+  scroll-snap-align:start;
+}
+.card img{
+  width:100%;
+  height:auto; /* BIAR IKUT ASLI */
+  border-radius:10px;
+}
+
+h2{
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  color: #ff1493;
+}
+
+
+
+.about{padding:20px;background:#fff;margin:20px;border-radius:10px;}
+
+.section{padding:10px;text-align:center;}
+
+.maps{padding:20px;}
+
+.footer{background:#ff4da6;color:#fff;text-align:center;padding:15px;}
+
+.wa{position:fixed;bottom:20px;right:20px;background:#25D366;color:#fff;padding:15px;border-radius:50%;text-decoration:none;}
+.fb{position:fixed;bottom:80px;right:20px;background:#1877F2;color:#fff;padding:15px;border-radius:50%;text-decoration:none;}
+
+/* ========================= */
+/* 📱 RESPONSIVE ANDROID */
+/* ========================= */
+@media screen and (max-width: 768px){
+
+  /* NAVBAR */
+  .navbar{
+    flex-direction: column;
+    gap:10px;
+    text-align:center;
+  }
+
+  .menu{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+
+  .menu a{
+    margin:5px;
+    font-size:14px;
+  }
+
+  /* LOGO */
+  .logo{
+    flex-direction:column;
+  }
+
+  /* BRAND */
+  .brand-center img{
+    width:100px;
+    height:100px;
+  }
+
+  .brand-center h1{
+    font-size:20px;
+  }
+
+  /* HERO */
+  .hero-text h2{
+    font-size:18px;
+  }
+
+  .hero-text p{
+    font-size:14px;
+  }
+
+  /* BUTTON */
+  .btn{
+    padding:10px 15px;
+    font-size:14px;
+  }
+
+  /* CARD PRODUK */
+  .card{
+    min-width:140px;
+    max-width:140px;
+    font-size:12px;
+  }
+
+  .card img{
+    height:auto;
+  }
+
+  /* CHATBOT */
+  #chatbot-box{
+    width:90%;
+    height:70%;
+    right:5%;
+    left:auto;
+    bottom:80px;
+    position:fixed;
+  }
+
+  #chatbot-container{
+    left:auto;
+    right:20px;
+  }
+
+  /* ABOUT */
+  .about{
+    margin:10px;
+    padding:15px;
+    font-size:14px;
+  }
+
+  /* MAP */
+  .maps iframe{
+    height:250px;
+  }
+
+  /* FLOAT BUTTON */
+  .wa, .fb{
+    padding:12px;
+  }
+
+}
+</style>
+</head>
+<body>
+  <!-- 🔥 PINDAH KE SINI -->
+<div id="chatbot-container">
+  <div id="chatbot-toggle">💬</div>
+
+  <div id="chatbot-box">
+    <div class="chat-header">N'B'O Assistant 💖</div>
+
+    <div id="chat-content"></div>
+
+    <div class="chat-input">
+  <input type="text" id="user-input" placeholder="Tanya sesuatu..." 
+  onkeypress="if(event.key==='Enter') sendMessage()">
+  <button onclick="sendMessage()">Kirim</button>
+</div>
+  </div>
+</div>
+
+
+<header>Welcome To N'B'O PRABUMULIH</header>
+
+
+<div class="navbar">
+  <div class="logo">
+    <img src="logo.jpeg" alt="logo butik">
+    <b>N'B'O PRABUMULIH</b>
+  </div>
+  <div class="menu">
+    <a href="#">Beranda</a>
+    <a href="#kategori">Kategori</a>
+    <a href="#about">Tentang</a>
+  </div>
+</div>
+
+<div class="brand-center">
+  <img src="logo.jpeg" alt="logo besar">
+  <h1>N'B'O PRABUMULIH</h1>
+</div>
+
+<div class="hero-text">
+  <h2>Tampil Cantik, Elegan & Percaya Diri Setiap Hari ✨</h2>
+  <p>Dapatkan koleksi fashion wanita modern & muslimah dengan kualitas terbaik, model terbaru, dan harga terjangkau hanya di N'B'O PRABUMULIH 💖</p>
+
+  <div class="btn-group">
+    <a href="https://wa.me/6288706979521" class="btn wa-btn">Chat WhatsApp</a>
+    <a href="https://facebook.com/nirta.birhap.9" class="btn fb-btn">Kunjungi Facebook</a>
+  </div>
+</div>
+
+<h2>Kategori Baju Rajut </h2>
+
+<div class="kategori">
+
+  <div class="card">
+    <img src="baju7.jpeg">
+    <p>Baju Rajut 1</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 90.000</p>
+  </div>
+
+  <div class="card">
+    <img src="baju2.jpeg">
+    <p>Baju Rajut 2</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 105.000</p>
+  </div>
+
+  <div class="card">
+    <img src="baju3.jpeg">
+    <p>Baju Rajut 3</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 75.000</p>
+  </div>
+
+  <div class="card">
+    <img src="baju4.jpeg">
+    <p>Baju Rajut 4</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 99.000</p>
+  </div>
+
+  <div class="card">
+    <img src="baju5.jpeg">
+    <p>Baju Rajut 5</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 78.000</p>
+  </div>
+
+  <div class="card">
+    <img src="baju6.jpeg">
+    <p>Baju Rajut 6</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 66.000</p>
+  </div>
+  <div class="card">
+    <img src="baju8.jpeg">
+    <p>Baju Rajut 8</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 110.000</p>
+  </div>
+  <div class="card">
+    <img src="baju9.jpeg">
+    <p>Baju Rajut 9</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 89.000</p>
+  </div>
+  <div class="card">
+    <img src="baju10.jpeg">
+    <p>Baju Rajut 10</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 115.000</p>
+  </div>
+  <div class="card">
+    <img src="baju11.jpeg">
+    <p>Baju Rajut 11/p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 100.000</p>
+  </div>
+
+</div>
+
+<h2>Kategori Gamis </h2>
+
+<div class="kategori">
+
+  <div class="card">
+    <img src="gamis1.jpeg">
+    <p>Gamis 1</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 150.000</p>
+  </div>
+
+  <div class="card">
+    <img src="gamis2.jpeg">
+    <p>Gamis 2</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 160.000</p>
+  </div>
+
+  <div class="card">
+    <img src="gamis3.jpeg">
+    <p>Gamis 3</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 155.000</p>
+  </div>
+
+  <div class="card">
+    <img src="gamis4.jpeg">
+    <p>Gamis 4</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 163.000</p>
+  </div>
+
+  <div class="card">
+    <img src="gamis5.jpeg">
+    <p>Gamis 5</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 138.000</p>
+  </div>
+
+  <div class="card">
+    <img src="gamis6.jpeg">
+    <p>Gamis 6</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 130.000</p>
+  </div>
+
+</div>
+
+<h2>Kategori Gamis Couple Pasangan </h2>
+
+<div class="kategori">
+
+  <div class="card">
+    <img src="couple1.jpeg">
+    <p>Couple 1</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 180.000</p>
+  </div>
+  <div class="card">
+    <img src="couple2.jpeg">
+    <p>Couple 2</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 180.000</p>
+  </div>
+  <div class="card">
+    <img src="couple3.jpeg">
+    <p>Couple 3</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 180.000</p>
+  </div>
+  <div class="card">
+    <img src="couple4.jpeg">
+    <p>Couple 4</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 180.000</p>
+  </div>
+  <div class="card">
+    <img src="couple5.jpeg">
+    <p>Couple 5</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 180.000</p>
+  </div>
+</div>
+
+<h2>Kategori Blouse</h2>
+
+<div class="kategori">
+
+  <div class="card">
+    <img src="blouse11.jpeg">
+    <p>Blouse 1</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 115.000</p>
+  </div>
+  <div class="card">
+    <img src="blouse2.jpeg">
+    <p>Blouse 2</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 120.000</p>
+  </div>
+  <div class="card">
+    <img src="blouse3.jpeg">
+    <p>Blouse 3</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 110.000</p>
+  </div>
+  <div class="card">
+    <img src="blouse4.jpeg">
+    <p>Blouse 4</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 130.000</p>
+  </div>
+  <div class="card">
+    <img src="blouse5.jpeg">
+    <p>Blouse 5</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 112.000</p>
+  </div>
+  <div class="card">
+    <img src="blouse6.jpeg">
+    <p>Blouse 6</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 125.000</p>
+  </div>
+  <div class="card">
+    <img src="blouse7.jpeg">
+    <p>Blouse 7</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 125.000</p>
+  </div>
+  <div class="card">
+    <img src="blouse8.jpeg">
+    <p>Blouse 8</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 115.000</p>
+  </div>
+  <div class="card">
+    <img src="blouse9.jpeg">
+    <p>Blouse 9</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 120.000</p>
+  </div>
+  <div class="card">
+    <img src="blouse10.jpeg">
+    <p>Blouse 10</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 100.000</p>
+  </div>
+  </div>
+
+
+
+<h2>Kategori Daster </h2>
+
+<div class="kategori">
+
+  <div class="card">
+    <img src="daster1.jpeg">
+    <p>Daster 1</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 50.000</p>
+  </div>
+
+  <div class="card">
+    <img src="daster2.jpeg">
+    <p>Daster 2</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 50.000</p>
+  </div>
+
+  <div class="card">
+    <img src="daster3.jpeg">
+    <p>Daster 3</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 50.000</p>
+  </div>
+
+  <div class="card">
+    <img src="daster4.jpeg">
+    <p>Daster 4</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 50.000</p>
+  </div>
+
+  <div class="card">
+    <img src="daster5.jpeg">
+    <p>Daster 5</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 50.000</p>
+  </div>
+
+  <div class="card">
+    <img src="daster6.jpeg">
+    <p>Daster 6</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 50.000</p>
+  </div>
+  <div class="card">
+    <img src="daster7.jpeg">
+    <p>Daster 7</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 45.000</p>
+  </div>
+  <div class="card">
+    <img src="daster8.jpeg">
+    <p>Daster 8</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 45.000</p>
+  </div>
+  <div class="card">
+    <img src="daster9.jpeg">
+    <p>Daster 9</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 45.000</p>
+  </div>
+  <div class="card">
+    <img src="daster10.jpeg">
+    <p>Daster 10</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 45.000</p>
+  </div>
+
+</div>
+  
+ <h2>Kategori Tunik </h2>
+
+<div class="kategori">
+
+  <div class="card">
+    <img src="tunik1.jpeg">
+    <p>Tunik 1</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 99.000</p>
+  </div>
+
+  <div class="card">
+    <img src="tunik2.jpeg">
+    <p>Tunik 2</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 115.000</p>
+  </div>
+
+  <div class="card">
+    <img src="tunik3.jpeg">
+    <p>Tunik 3</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 89.000</p>
+  </div>
+
+  <div class="card">
+    <img src="tunik4.jpeg">
+    <p>Tunik 4</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 120.000</p>
+  </div>
+
+  <div class="card">
+    <img src="tunik5.jpeg">
+    <p>Tunik 5</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 135.000</p>
+  </div>
+
+  <div class="card">
+    <img src="tunik6.jpeg">
+    <p>Tunik 6</p>
+    <p style="color:#ff1493;font-weight:bold;">Rp 150.000</p>
+  </div>
+
+</div>
+
+  </div>
+
+
+<div class="about" id="about">
+  <h2>Tentang Butik</h2>
+
+  <p><b>N'B'O PRABUMULIH</b> merupakan butik fashion wanita yang berfokus pada penyediaan pakaian modern dan muslimah dengan desain yang elegan, kekinian, serta nyaman digunakan dalam berbagai aktivitas sehari-hari maupun acara formal.</p>
+
+  <p>Butik ini didirikan dan dikelola oleh <b>NIRTA BIRHAP</b>, dengan tujuan menghadirkan produk fashion yang tidak hanya mengikuti tren, tetapi juga tetap menjaga nilai kesopanan dan kenyamanan bagi para wanita.</p>
+
+  <p>Kami menyediakan berbagai jenis pakaian seperti <b>tunik, kemeja, gamis, dan blouse</b> yang dipilih dengan kualitas bahan terbaik, jahitan rapi, serta model yang selalu update mengikuti perkembangan fashion saat ini.</p>
+
+  <p>N'B'O PRABUMULIH beroperasi secara online, sehingga pelanggan dapat dengan mudah melakukan pemesanan dari mana saja melalui <b>WhatsApp</b> dan melihat update produk terbaru melalui <b>Facebook</b>. Sistem ini memudahkan pelanggan tanpa harus datang langsung ke toko.</p>
+
+  <p>Kami selalu mengutamakan kepuasan pelanggan dengan memberikan pelayanan yang ramah, respon cepat, serta proses pemesanan yang mudah dan terpercaya.</p>
+
+  <p><b>Keunggulan N'B'O PRABUMULIH:</b></p>
+  <ul>
+    <li>Produk berkualitas dengan bahan nyaman dipakai</li>
+    <li>Model selalu update dan mengikuti tren</li>
+    <li>Pelayanan cepat dan responsif</li>
+    <li>Pemesanan mudah melalui WhatsApp</li>
+    <li>Update produk aktif di Facebook</li>
+  </ul>
+
+  <p><b>Visi:</b><br>
+  Menjadi butik fashion wanita terpercaya di Prabumulih yang menyediakan produk berkualitas dan selalu mengikuti perkembangan tren fashion.</p>
+
+  <p><b>Misi:</b></p>
+  <ul>
+    <li>Menyediakan pakaian wanita yang modis dan berkualitas</li>
+    <li>Memberikan pelayanan terbaik kepada pelanggan</li>
+    <li>Mempermudah proses pembelian secara online</li>
+    <li>Selalu menghadirkan produk terbaru dan menarik</li>
+  </ul>
+
+  <hr style="margin:30px 0;">
+
+<h2>Jam Operasional</h2>
+
+<p>
+🕒 <b>Senin - Sabtu:</b> 09.00 - 21.00 WIB<br>
+🕒 <b>Minggu:</b> 10.00 - 18.00 WIB
+</p>
+
+<p>
+💬 Pemesanan online tetap buka 24 jam, namun respon admin mengikuti jam operasional.
+</p>
+
+  <p>Untuk melihat koleksi terbaru dan update produk, silakan kunjungi Facebook kami atau hubungi langsung melalui WhatsApp yang tersedia di website ini.</p>
+</div>
+
+<div class="maps">
+  <h2>Lokasi</h2>
+  <iframe src="https://maps.google.com/maps?q=prabumulih&t=&z=13&ie=UTF8&iwloc=&output=embed" width="100%" height="300"></iframe>
+</div>
+
+<a class="wa" href="https://wa.me/6288706979521">WA</a>
+<a class="fb" href="https://facebook.com/nirta.birhap.9">FB</a>
+
+<div class="footer">© 2026 N'B'O PRABUMULIH</div>
+
+</body>
+</html>
