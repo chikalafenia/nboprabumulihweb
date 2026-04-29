@@ -21,12 +21,80 @@ document.addEventListener("DOMContentLoaded", function(){
     box.style.display = box.style.display === "flex" ? "none" : "flex";
   });
 
-  fetch("get_produk.php")
-    .then(res => res.json())
-    .then(data => {
-      produk = data;
-    })
-    .catch(err => console.log(err));
+  produk = [
+
+  // =========================
+  // BAJU RAJUT
+  // =========================
+  {id:1,nama:"Baju Rajut 1",harga:90000,deskripsi:"Baju rajut nyaman",gambar:"baju7.jpeg",ukuran:"M,L,XL",warna:"Random",stok:10},
+  {id:2,nama:"Baju Rajut 2",harga:105000,deskripsi:"Baju rajut stylish",gambar:"baju2.jpeg",ukuran:"M,L,XL",warna:"Random",stok:8},
+  {id:3,nama:"Baju Rajut 3",harga:75000,deskripsi:"Baju rajut santai",gambar:"baju3.jpeg",ukuran:"M,L",warna:"Random",stok:7},
+  {id:4,nama:"Baju Rajut 4",harga:99000,deskripsi:"Baju rajut elegan",gambar:"baju4.jpeg",ukuran:"M,L,XL",warna:"Random",stok:6},
+  {id:5,nama:"Baju Rajut 5",harga:78000,deskripsi:"Baju rajut simple",gambar:"baju5.jpeg",ukuran:"M,L",warna:"Random",stok:9},
+  {id:6,nama:"Baju Rajut 6",harga:66000,deskripsi:"Baju rajut murah",gambar:"baju6.jpeg",ukuran:"M,L",warna:"Random",stok:10},
+  {id:7,nama:"Baju Rajut 8",harga:110000,deskripsi:"Baju rajut premium",gambar:"baju8.jpeg",ukuran:"M,L,XL",warna:"Random",stok:5},
+  {id:8,nama:"Baju Rajut 9",harga:89000,deskripsi:"Baju rajut trendy",gambar:"baju9.jpeg",ukuran:"M,L",warna:"Random",stok:7},
+  {id:9,nama:"Baju Rajut 10",harga:115000,deskripsi:"Baju rajut modern",gambar:"baju10.jpeg",ukuran:"M,L,XL",warna:"Random",stok:6},
+  {id:10,nama:"Baju Rajut 11",harga:100000,deskripsi:"Baju rajut terbaru",gambar:"baju11.jpeg",ukuran:"M,L,XL",warna:"Random",stok:8},
+
+  // =========================
+  // GAMIS
+  // =========================
+  {id:11,nama:"Gamis 1",harga:150000,deskripsi:"Gamis elegan",gambar:"gamis1.jpeg",ukuran:"M,L,XL",warna:"Random",stok:10},
+  {id:12,nama:"Gamis 2",harga:160000,deskripsi:"Gamis modern",gambar:"gamis2.jpeg",ukuran:"M,L,XL",warna:"Random",stok:9},
+  {id:13,nama:"Gamis 3",harga:155000,deskripsi:"Gamis cantik",gambar:"gamis3.jpeg",ukuran:"M,L",warna:"Random",stok:8},
+  {id:14,nama:"Gamis 4",harga:163000,deskripsi:"Gamis premium",gambar:"gamis4.jpeg",ukuran:"M,L,XL",warna:"Random",stok:7},
+  {id:15,nama:"Gamis 5",harga:138000,deskripsi:"Gamis murah",gambar:"gamis5.jpeg",ukuran:"M,L",warna:"Random",stok:10},
+  {id:16,nama:"Gamis 6",harga:130000,deskripsi:"Gamis santai",gambar:"gamis6.jpeg",ukuran:"M,L",warna:"Random",stok:9},
+
+  // =========================
+  // COUPLE
+  // =========================
+  {id:17,nama:"Couple 1",harga:180000,deskripsi:"Gamis couple pasangan",gambar:"couple1.jpeg",ukuran:"L,XL",warna:"Random",stok:5},
+  {id:18,nama:"Couple 2",harga:180000,deskripsi:"Gamis couple elegan",gambar:"couple2.jpeg",ukuran:"L,XL",warna:"Random",stok:5},
+  {id:19,nama:"Couple 3",harga:180000,deskripsi:"Gamis couple modern",gambar:"couple3.jpeg",ukuran:"L,XL",warna:"Random",stok:5},
+  {id:20,nama:"Couple 4",harga:180000,deskripsi:"Gamis couple trendy",gambar:"couple4.jpeg",ukuran:"L,XL",warna:"Random",stok:5},
+  {id:21,nama:"Couple 5",harga:180000,deskripsi:"Gamis couple terbaru",gambar:"couple5.jpeg",ukuran:"L,XL",warna:"Random",stok:5},
+
+  // =========================
+  // BLOUSE
+  // =========================
+  {id:22,nama:"Blouse 1",harga:115000,deskripsi:"Blouse cantik",gambar:"blouse11.jpeg",ukuran:"M,L",warna:"Random",stok:8},
+  {id:23,nama:"Blouse 2",harga:120000,deskripsi:"Blouse modern",gambar:"blouse2.jpeg",ukuran:"M,L",warna:"Random",stok:7},
+  {id:24,nama:"Blouse 3",harga:110000,deskripsi:"Blouse santai",gambar:"blouse3.jpeg",ukuran:"M,L",warna:"Random",stok:6},
+  {id:25,nama:"Blouse 4",harga:130000,deskripsi:"Blouse premium",gambar:"blouse4.jpeg",ukuran:"M,L",warna:"Random",stok:5},
+  {id:26,nama:"Blouse 5",harga:112000,deskripsi:"Blouse simple",gambar:"blouse5.jpeg",ukuran:"M,L",warna:"Random",stok:8},
+  {id:27,nama:"Blouse 6",harga:125000,deskripsi:"Blouse elegan",gambar:"blouse6.jpeg",ukuran:"M,L",warna:"Random",stok:7},
+  {id:28,nama:"Blouse 7",harga:125000,deskripsi:"Blouse trendy",gambar:"blouse7.jpeg",ukuran:"M,L",warna:"Random",stok:6},
+  {id:29,nama:"Blouse 8",harga:115000,deskripsi:"Blouse kekinian",gambar:"blouse8.jpeg",ukuran:"M,L",warna:"Random",stok:7},
+  {id:30,nama:"Blouse 9",harga:120000,deskripsi:"Blouse wanita",gambar:"blouse9.jpeg",ukuran:"M,L",warna:"Random",stok:6},
+  {id:31,nama:"Blouse 10",harga:100000,deskripsi:"Blouse murah",gambar:"blouse10.jpeg",ukuran:"M,L",warna:"Random",stok:9},
+
+  // =========================
+  // DASTER
+  // =========================
+  {id:32,nama:"Daster 1",harga:50000,deskripsi:"Daster nyaman",gambar:"daster1.jpeg",ukuran:"All Size",warna:"Random",stok:10},
+  {id:33,nama:"Daster 2",harga:50000,deskripsi:"Daster santai",gambar:"daster2.jpeg",ukuran:"All Size",warna:"Random",stok:10},
+  {id:34,nama:"Daster 3",harga:50000,deskripsi:"Daster harian",gambar:"daster3.jpeg",ukuran:"All Size",warna:"Random",stok:10},
+  {id:35,nama:"Daster 4",harga:50000,deskripsi:"Daster simple",gambar:"daster4.jpeg",ukuran:"All Size",warna:"Random",stok:10},
+  {id:36,nama:"Daster 5",harga:50000,deskripsi:"Daster murah",gambar:"daster5.jpeg",ukuran:"All Size",warna:"Random",stok:10},
+  {id:37,nama:"Daster 6",harga:50000,deskripsi:"Daster adem",gambar:"daster6.jpeg",ukuran:"All Size",warna:"Random",stok:10},
+  {id:38,nama:"Daster 7",harga:45000,deskripsi:"Daster ringan",gambar:"daster7.jpeg",ukuran:"All Size",warna:"Random",stok:10},
+  {id:39,nama:"Daster 8",harga:45000,deskripsi:"Daster nyaman dipakai",gambar:"daster8.jpeg",ukuran:"All Size",warna:"Random",stok:10},
+  {id:40,nama:"Daster 9",harga:45000,deskripsi:"Daster santai dirumah",gambar:"daster9.jpeg",ukuran:"All Size",warna:"Random",stok:10},
+  {id:41,nama:"Daster 10",harga:45000,deskripsi:"Daster murah meriah",gambar:"daster10.jpeg",ukuran:"All Size",warna:"Random",stok:10},
+
+  // =========================
+  // TUNIK
+  // =========================
+  {id:42,nama:"Tunik 1",harga:99000,deskripsi:"Tunik santai",gambar:"tunik1.jpeg",ukuran:"M,L",warna:"Random",stok:8},
+  {id:43,nama:"Tunik 2",harga:115000,deskripsi:"Tunik modern",gambar:"tunik2.jpeg",ukuran:"M,L",warna:"Random",stok:7},
+  {id:44,nama:"Tunik 3",harga:89000,deskripsi:"Tunik murah",gambar:"tunik3.jpeg",ukuran:"M,L",warna:"Random",stok:9},
+  {id:45,nama:"Tunik 4",harga:120000,deskripsi:"Tunik elegan",gambar:"tunik4.jpeg",ukuran:"M,L",warna:"Random",stok:6},
+  {id:46,nama:"Tunik 5",harga:135000,deskripsi:"Tunik premium",gambar:"tunik5.jpeg",ukuran:"M,L",warna:"Random",stok:5},
+  {id:47,nama:"Tunik 6",harga:150000,deskripsi:"Tunik terbaru",gambar:"tunik6.jpeg",ukuran:"M,L",warna:"Random",stok:5}
+
+];
 
 });
 
@@ -983,7 +1051,7 @@ h2{
   </div>
   <div class="card">
     <img src="baju11.jpeg">
-    <p>Baju Rajut 11/p>
+    <p>Baju Rajut 11</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 100.000</p>
   </div>
 
