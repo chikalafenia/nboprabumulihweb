@@ -610,32 +610,26 @@ cursor:pointer;
 
 function beliProduk(nama, harga, gambar){
 
-  // VALIDASI
-  if(!pilihan[nama] || !pilihan[nama].ukuran){
-    alert('Pilih ukuran dulu!');
-    return;
-  }
+  // 🔥 AMBIL DATA PILIHAN (AUTO DEFAULT)
+  let ukuran = pilihan[nama]?.ukuran || "All Size";
+  let qty = pilihan[nama]?.qty || 1;
+  let bayar = pilihan[nama]?.bayar || "COD";
 
-  if(!pilihan[nama]?.bayar){
-    alert('Pilih metode pembayaran dulu!');
-    return;
-  }
-
-  // INPUT ALAMAT
+  // INPUT PEMBELI
   let namaPembeli = document.getElementById("nama_" + nama).value;
-let alamat = document.getElementById("alamat_" + nama).value;
-let kotaInput = document.getElementById("kota_" + nama).value;
-let hp = document.getElementById("hp_" + nama).value;
+  let alamat = document.getElementById("alamat_" + nama).value;
+  let kotaInput = document.getElementById("kota_" + nama).value;
+  let hp = document.getElementById("hp_" + nama).value;
 
-if(!namaPembeli || !alamat || !kotaInput || !hp){
-  alert("Lengkapi data pembeli!");
-  return;
-}
+  if(!namaPembeli || !alamat || !kotaInput || !hp){
+    alert("Lengkapi data pembeli!");
+    return;
+  }
 
   // =========================
-  // AUTO ONGKIR
+  // ONGKIR
   // =========================
-  let kota = deteksiKota(alamat);
+  let kota = deteksiKota(kotaInput);
 
   let ongkir = 0;
   let estimasi = "-";
@@ -644,7 +638,6 @@ if(!namaPembeli || !alamat || !kotaInput || !hp){
     ongkir = ongkirData[kota].ongkir;
     estimasi = ongkirData[kota].estimasi;
   } else {
-    alert("Kota tidak dikenali, ongkir default Rp 20.000");
     ongkir = 20000;
     estimasi = "2-4 hari";
   }
@@ -674,12 +667,10 @@ Saya ingin memesan produk:
 💰 Total Bayar: Rp ${total.toLocaleString()}
 `;
 
-let noAdmin = "6288706979521"; // nomor admin (WA aktif)
+  let noAdmin = "6288706979521";
+  let url = `https://wa.me/${noAdmin}?text=${encodeURIComponent(text)}`;
 
-let url = `https://wa.me/${noAdmin}?text=${encodeURIComponent(text)}`;
-
-// 🔥 WAJIB pakai ini (bukan window.open)
-window.location.href = url;
+  window.location.href = url;
 }
 
 </script>
