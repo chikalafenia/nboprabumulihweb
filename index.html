@@ -472,6 +472,37 @@ text-decoration:none;
 
 let pilihan = {};
 
+
+// 🔥 TARUH DI SINI
+let lokasiUser = {};
+
+
+function ambilLokasi(nama){
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(
+      function(pos){
+        let lat = pos.coords.latitude;
+        let lng = pos.coords.longitude;
+
+        // ✅ FIX DI SINI
+        let link = `https://www.google.com/maps?q=${lat},${lng}`;
+
+        lokasiUser[nama] = link;
+
+        document.getElementById("alamat_" + nama).value = link;
+
+        alert("✅ Lokasi berhasil diambil!");
+      },
+      function(error){
+        alert("❌ Gagal ambil lokasi! Aktifkan GPS / izinkan lokasi");
+        console.log(error);
+      }
+    );
+  } else {
+    alert("❌ Browser tidak support lokasi");
+  }
+}
+
 function pilihUkuran(nama, ukuran){
   if(!pilihan[nama]){
     pilihan[nama] = {};
@@ -492,6 +523,8 @@ function pilihBayar(nama, metode){
   if(!pilihan[nama]) pilihan[nama] = {};
   pilihan[nama].bayar = metode;
 }
+
+
 
 // =========================
 // KIRIM CHAT
@@ -519,6 +552,7 @@ function sendMessage(){
       console.log(err);
     });
 }
+
 
 
 // =========================
@@ -587,7 +621,7 @@ function tampilProduk(p, judul = ""){
 📋 Data Pembeli:<br><br>
 
 <input type="text" id="nama_${p.nama}" placeholder="Nama" style="width:100%;margin-bottom:5px;padding:5px;">
-<input type="text" id="alamat_${p.nama}" placeholder="Alamat" style="width:100%;margin-bottom:5px;padding:5px;">
+
 <input type="text" id="alamat_${p.nama}" placeholder="Alamat"
 style="width:100%;margin-bottom:5px;padding:5px;">
 
@@ -598,8 +632,9 @@ style="margin-bottom:10px;background:#ff4da6;color:white;border:none;padding:5px
 
 <input type="text" id="kota_${p.nama}" placeholder="Kota (contoh: Palembang)"
 style="width:100%;margin-bottom:5px;padding:5px;">
-<input type="text" id="kota_${p.nama}" placeholder="Kota (contoh: Palembang)" style="width:100%;margin-bottom:5px;padding:5px;">
-<input type="text" id="hp_${p.nama}" placeholder="No WhatsApp" style="width:100%;margin-bottom:5px;padding:5px;">
+
+<input type="text" id="hp_${p.nama}" placeholder="No WhatsApp"
+style="width:100%;margin-bottom:5px;padding:5px;">
 
    <button 
 onclick="beliProduk('${p.nama.replace(/'/g,"\\'")}', ${p.harga}, '${p.gambar}')"
@@ -618,27 +653,6 @@ cursor:pointer;
   `;
 }
 
-// =========================
-// SIMPAN LOKASI USER
-// =========================
-let lokasiUser = {};
-
-function ambilLokasi(nama){
-  if(navigator.geolocation){
-    navigator.geolocation.getCurrentPosition(function(pos){
-      let lat = pos.coords.latitude;
-      let lng = pos.coords.longitude;
-
-      let link = `https://www.google.com/maps?q=${lat},${lng}`;
-
-      lokasiUser[nama] = link;
-
-      alert("✅ Lokasi berhasil diambil!");
-    });
-  } else {
-    alert("❌ Browser tidak support lokasi");
-  }
-} 
 
 function beliProduk(nama, harga, gambar){
 
