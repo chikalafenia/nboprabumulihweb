@@ -588,6 +588,16 @@ function tampilProduk(p, judul = ""){
 
 <input type="text" id="nama_${p.nama}" placeholder="Nama" style="width:100%;margin-bottom:5px;padding:5px;">
 <input type="text" id="alamat_${p.nama}" placeholder="Alamat" style="width:100%;margin-bottom:5px;padding:5px;">
+<input type="text" id="alamat_${p.nama}" placeholder="Alamat"
+style="width:100%;margin-bottom:5px;padding:5px;">
+
+<button onclick="ambilLokasi('${p.nama}')"
+style="margin-bottom:10px;background:#ff4da6;color:white;border:none;padding:5px 10px;border-radius:10px;">
+📍 Ambil Lokasi Saya
+</button>
+
+<input type="text" id="kota_${p.nama}" placeholder="Kota (contoh: Palembang)"
+style="width:100%;margin-bottom:5px;padding:5px;">
 <input type="text" id="kota_${p.nama}" placeholder="Kota (contoh: Palembang)" style="width:100%;margin-bottom:5px;padding:5px;">
 <input type="text" id="hp_${p.nama}" placeholder="No WhatsApp" style="width:100%;margin-bottom:5px;padding:5px;">
 
@@ -608,6 +618,28 @@ cursor:pointer;
   `;
 }
 
+// =========================
+// SIMPAN LOKASI USER
+// =========================
+let lokasiUser = {};
+
+function ambilLokasi(nama){
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(function(pos){
+      let lat = pos.coords.latitude;
+      let lng = pos.coords.longitude;
+
+      let link = `https://www.google.com/maps?q=${lat},${lng}`;
+
+      lokasiUser[nama] = link;
+
+      alert("✅ Lokasi berhasil diambil!");
+    });
+  } else {
+    alert("❌ Browser tidak support lokasi");
+  }
+} 
+
 function beliProduk(nama, harga, gambar){
 
   // 🔥 AMBIL DATA PILIHAN (AUTO DEFAULT)
@@ -618,6 +650,11 @@ function beliProduk(nama, harga, gambar){
   // INPUT PEMBELI
   let namaPembeli = document.getElementById("nama_" + nama).value;
   let alamat = document.getElementById("alamat_" + nama).value;
+  // =========================
+// LINK GOOGLE MAPS
+// =========================
+let mapsLink = lokasiUser[nama] || 
+  "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(alamat);
   let kotaInput = document.getElementById("kota_" + nama).value;
   let hp = document.getElementById("hp_" + nama).value;
 
