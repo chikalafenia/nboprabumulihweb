@@ -737,7 +737,75 @@ setTimeout(() => {
 }, 1500);
 }
 
+// =========================
+// SEARCH PRODUK
+// =========================
+function cariProduk(){
+
+  let input = document
+    .getElementById("searchInput")
+    .value
+    .toLowerCase()
+    .trim();
+
+  let produk = document.querySelectorAll(".produk-item");
+
+  let ditemukan = 0;
+
+  produk.forEach(item => {
+
+    let text = item.innerText.toLowerCase();
+
+    if(text.includes(input)){
+
+      item.style.display = "block";
+
+      item.style.animation = "fadeProduk 0.3s ease";
+
+      ditemukan++;
+
+    }else{
+
+      item.style.display = "none";
+
+    }
+
+  });
+
+  // NOT FOUND
+  let notif = document.getElementById("notFound");
+
+  if(ditemukan === 0){
+    notif.style.display = "block";
+  }else{
+    notif.style.display = "none";
+  }
+
+}
+
+// toggle menu HP
+function toggleMenu(){
+
+  document.getElementById("menu")
+  .classList.toggle("show");
+
+}
+
+// shrink navbar saat scroll
+window.addEventListener("scroll", function(){
+
+  const nav = document.querySelector(".navbar-clean");
+
+  if(window.scrollY > 50){
+    nav.classList.add("shrink");
+  } else {
+    nav.classList.remove("shrink");
+  }
+
+});
+
 </script>
+
   <title>N'B'O PRABUMULIH</title>
   <style>
     
@@ -1006,6 +1074,350 @@ h2{
   }
 
 }
+/* ========================= */
+/* NAVBAR PREMIUM GLASS CLEAN */
+/* ========================= */
+
+.navbar-clean{
+
+  width:100%;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:14px 6%;
+
+  position:sticky;
+  top:0;
+  z-index:999;
+
+  background:rgba(255,255,255,0.65);
+  backdrop-filter:blur(15px);
+
+  border-bottom:1px solid rgba(0,0,0,0.05);
+
+  box-shadow:0 8px 25px rgba(0,0,0,0.06);
+
+  transition:0.3s ease;
+}
+
+/* SHRINK SAAT SCROLL */
+.navbar-clean.shrink{
+  padding:10px 6%;
+  background:rgba(255,255,255,0.9);
+}
+
+/* LOGO */
+.nav-logo{
+
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+}
+
+.nav-logo img{
+
+  width:45px;
+  height:45px;
+
+  border-radius:50%;
+
+  object-fit:cover;
+
+  border:2px solid #ff4da6;
+
+}
+
+.nav-logo span{
+
+  font-weight:700;
+
+  color:#ff1493;
+
+  font-size:16px;
+
+}
+
+/* MENU */
+
+.nav-menu{
+
+  display:flex;
+  align-items:center;
+  gap:20px;
+
+}
+
+.nav-menu a{
+
+  text-decoration:none;
+
+  font-weight:500;
+
+  color:#444;
+
+  font-size:15px;
+
+  transition:0.3s;
+
+  position:relative;
+
+}
+
+.nav-menu a:hover{
+
+  color:#ff1493;
+
+}
+
+/* BUTTON WHATSAPP */
+
+.nav-wa{
+
+  background:#25D366;
+
+  color:white !important;
+
+  padding:8px 15px;
+
+  border-radius:25px;
+
+  font-weight:bold;
+
+  box-shadow:0 5px 15px rgba(37,211,102,0.25);
+
+}
+
+/* BUTTON FACEBOOK */
+
+.nav-fb{
+
+  background:#1877F2;
+
+  color:white !important;
+
+  padding:8px 15px;
+
+  border-radius:25px;
+
+  font-weight:bold;
+
+  box-shadow:0 5px 15px rgba(24,119,242,0.25);
+
+}
+
+/* HAMBURGER */
+
+.hamburger{
+
+  display:none;
+
+  font-size:26px;
+
+  cursor:pointer;
+
+  color:#ff1493;
+
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+  .hamburger{
+    display:block;
+  }
+
+  .nav-menu{
+
+    display:none;
+
+    position:absolute;
+
+    top:70px;
+    right:6%;
+
+    flex-direction:column;
+
+    background:white;
+
+    padding:15px;
+
+    border-radius:15px;
+
+    width:200px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,0.1);
+
+  }
+
+  .nav-menu.show{
+    display:flex;
+  }
+
+}
+
+/* ========================= */
+/* MAPS MODERN */
+/* ========================= */
+
+.maps-section{
+  padding:80px 20px;
+  background:#fff0f5;
+  text-align:center;
+}
+
+/* JUDUL */
+.maps-section h2{
+  font-size:30px;
+  color:#ff1493;
+  margin-bottom:20px;
+}
+
+/* ALAMAT */
+.maps-section p{
+  font-size:18px;
+  color:#555;
+  line-height:1.8;
+  margin-bottom:35px;
+}
+
+/* CONTAINER MAP */
+.maps-container{
+  width:90%;
+  max-width:1000px;
+  margin:auto;
+
+  border-radius:25px;
+  overflow:hidden;
+
+  box-shadow:0 10px 25px rgba(0,0,0,0.12);
+  background:white;
+}
+
+/* IFRAME MAP */
+.maps-container iframe{
+  width:100%;
+  height:450px;
+  border:none;
+  display:block;
+}
+
+.maps-container iframe{
+  height:280px;
+}
+
+/* BUTTON */
+.maps-btn{
+  display:inline-block;
+  margin-top:35px;
+
+  background:linear-gradient(
+    135deg,
+    #ff1493,
+    #ff4da6
+  );
+
+  color:white;
+  text-decoration:none;
+
+  padding:16px 35px;
+
+  border-radius:50px;
+
+  font-size:16px;
+  font-weight:bold;
+
+  transition:0.3s;
+}
+
+.maps-btn:hover{
+  transform:translateY(-5px);
+  box-shadow:0 12px 25px rgba(255,20,147,0.25);
+}
+
+/* ========================= */
+/* RESPONSIVE HP */
+/* ========================= */
+
+@media(max-width:768px){
+
+  .maps-section{
+    padding:50px 15px;
+  }
+
+  .maps-section h2{
+    font-size:28px;
+  }
+
+  .maps-section p{
+    font-size:15px;
+  }
+
+  .maps-container{
+    width:100%;
+    border-radius:20px;
+  }
+
+  .maps-container iframe{
+    height:350px;
+  }
+
+  .maps-btn{
+    width:90%;
+  }
+/* SEARCH */
+
+.search-box{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  margin:30px 0;
+}
+
+.search-box input{
+  width:60%;
+  max-width:500px;
+
+  padding:15px 20px;
+
+  border:none;
+  border-radius:40px;
+
+  outline:none;
+
+  font-size:16px;
+
+  box-shadow:0 4px 15px rgba(0,0,0,0.1);
+
+  background:white;
+}
+
+/* HP */
+@media(max-width:768px){
+
+  .search-box input{
+    width:90%;
+    font-size:14px;
+  }
+
+}
+@keyframes fadeProduk{
+
+  from{
+    opacity:0;
+    transform:scale(0.9);
+  }
+
+  to{
+    opacity:1;
+    transform:scale(1);
+  }
+
+}
+}
 </style>
 </head>
 <body>
@@ -1030,84 +1442,105 @@ h2{
 <header>Welcome To N'B'O PRABUMULIH</header>
 
 
-<div class="navbar">
-  <div class="logo">
-    <img src="logo.jpeg" alt="logo butik">
-    <b>N'B'O PRABUMULIH</b>
+<nav class="navbar-clean">
+
+  <!-- LOGO -->
+  <div class="nav-logo">
+    <img src="logo.jpeg" alt="Logo">
+    <span>N'B'O PRABUMULIH</span>
   </div>
-  <div class="menu">
+
+  <!-- HAMBURGER (HP) -->
+  <div class="hamburger" onclick="toggleMenu()">
+    ☰
+  </div>
+
+  <!-- MENU -->
+  <div class="nav-menu" id="menu">
+
     <a href="#">Beranda</a>
     <a href="#kategori">Kategori</a>
     <a href="#about">Tentang</a>
+
+    <a href="https://wa.me/6288706979521" target="_blank" class="nav-wa">
+      💬 WhatsApp
+    </a>
+
+    <a href="https://facebook.com/nirta.birhap.9" target="_blank" class="nav-fb">
+      📘 Facebook
+    </a>
+
   </div>
-</div>
 
+</nav>
 
-<div class="hero-text">
-  <h2>Tampil Cantik, Elegan & Percaya Diri Setiap Hari ✨</h2>
-  <p>Dapatkan koleksi fashion wanita modern & muslimah dengan kualitas terbaik, model terbaru, dan harga terjangkau hanya di N'B'O PRABUMULIH</p>
+<!-- SEARCH -->
+<div class="search-box">
 
-  <div class="btn-group">
-    <a href="https://wa.me/6288706979521" class="btn wa-btn">Chat WhatsApp</a>
-    <a href="https://facebook.com/nirta.birhap.9" class="btn fb-btn">Kunjungi Facebook</a>
-  </div>
+  <input 
+    type="text"
+    id="searchInput"
+    placeholder="Cari produk..."
+    onkeyup="cariProduk()"
+  >
+
 </div>
 
 <h2>Kategori Baju Rajut </h2>
 
 <div class="kategori">
 
-  <div class="card">
+  <div class="card produk-item">
     <img src="baju7.jpeg">
     <p>Baju Rajut 1</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 90.000</p>
   </div>
 
-  <div class="card">
+  <div class="card produk-item">
     <img src="baju2.jpeg">
     <p>Baju Rajut 2</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 105.000</p>
   </div>
 
-  <div class="card">
+  <div class="card produk-item">
     <img src="baju3.jpeg">
     <p>Baju Rajut 3</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 75.000</p>
   </div>
 
-  <div class="card">
+  <div class="card produk-item">
     <img src="baju4.jpeg">
     <p>Baju Rajut 4</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 99.000</p>
   </div>
 
-  <div class="card">
+  <div class="card produk-item">
     <img src="baju5.jpeg">
     <p>Baju Rajut 5</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 78.000</p>
   </div>
 
-  <div class="card">
+  <div class="card produk-item">
     <img src="baju6.jpeg">
     <p>Baju Rajut 6</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 66.000</p>
   </div>
-  <div class="card">
+  <div class="card produk-item">
     <img src="baju8.jpeg">
     <p>Baju Rajut 8</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 110.000</p>
   </div>
-  <div class="card">
+  <div class="card produk-item">
     <img src="baju9.jpeg">
     <p>Baju Rajut 9</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 89.000</p>
   </div>
-  <div class="card">
+  <div class="card produk-item">
     <img src="baju10.jpeg">
     <p>Baju Rajut 10</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 115.000</p>
   </div>
-  <div class="card">
+ <div class="card produk-item">
     <img src="baju11.jpeg">
     <p>Baju Rajut 11</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 100.000</p>
@@ -1119,37 +1552,37 @@ h2{
 
 <div class="kategori">
 
-  <div class="card">
+ <div class="card produk-item">
     <img src="gamis1.jpeg">
     <p>Gamis 1</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 150.000</p>
   </div>
 
-  <div class="card">
+ <div class="card produk-item">
     <img src="gamis2.jpeg">
     <p>Gamis 2</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 160.000</p>
   </div>
 
-  <div class="card">
+  <div class="card produk-item">
     <img src="gamis3.jpeg">
     <p>Gamis 3</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 155.000</p>
   </div>
 
-  <div class="card">
+  <div class="card produk-item">
     <img src="gamis4.jpeg">
     <p>Gamis 4</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 163.000</p>
   </div>
 
-  <div class="card">
+  <div class="card produk-item">
     <img src="gamis5.jpeg">
     <p>Gamis 5</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 138.000</p>
   </div>
 
-  <div class="card">
+  <div class="card produk-item">
     <img src="gamis6.jpeg">
     <p>Gamis 6</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 130.000</p>
@@ -1161,27 +1594,27 @@ h2{
 
 <div class="kategori">
 
-  <div class="card">
+  <div class="card produk-item">
     <img src="couple1.jpeg">
     <p>Couple 1</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 180.000</p>
   </div>
-  <div class="card">
+  <div class="card produk-item">
     <img src="couple2.jpeg">
     <p>Couple 2</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 180.000</p>
   </div>
-  <div class="card">
+  <div class="card produk-item">
     <img src="couple3.jpeg">
     <p>Couple 3</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 180.000</p>
   </div>
-  <div class="card">
+ <div class="card produk-item">
     <img src="couple4.jpeg">
     <p>Couple 4</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 180.000</p>
   </div>
-  <div class="card">
+  <div class="card produk-item">
     <img src="couple5.jpeg">
     <p>Couple 5</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 180.000</p>
@@ -1192,52 +1625,52 @@ h2{
 
 <div class="kategori">
 
-  <div class="card">
+ <div class="card produk-item">
     <img src="blouse11.jpeg">
     <p>Blouse 1</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 115.000</p>
   </div>
-  <div class="card">
+ <div class="card produk-item">
     <img src="blouse2.jpeg">
     <p>Blouse 2</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 120.000</p>
   </div>
-  <div class="card">
+ <div class="card produk-item">
     <img src="blouse3.jpeg">
     <p>Blouse 3</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 110.000</p>
   </div>
-  <div class="card">
+  <div class="card produk-item">
     <img src="blouse4.jpeg">
     <p>Blouse 4</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 130.000</p>
   </div>
-  <div class="card">
+  <div class="card produk-item">
     <img src="blouse5.jpeg">
     <p>Blouse 5</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 112.000</p>
   </div>
-  <div class="card">
+  <div class="card produk-item">
     <img src="blouse6.jpeg">
     <p>Blouse 6</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 125.000</p>
   </div>
-  <div class="card">
+  <div class="card produk-item">
     <img src="blouse7.jpeg">
     <p>Blouse 7</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 125.000</p>
   </div>
-  <div class="card">
+ <div class="card produk-item">
     <img src="blouse8.jpeg">
     <p>Blouse 8</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 115.000</p>
   </div>
-  <div class="card">
+ <div class="card produk-item">
     <img src="blouse9.jpeg">
     <p>Blouse 9</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 120.000</p>
   </div>
-  <div class="card">
+ <div class="card produk-item">
     <img src="blouse10.jpeg">
     <p>Blouse 10</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 100.000</p>
@@ -1250,57 +1683,57 @@ h2{
 
 <div class="kategori">
 
-  <div class="card">
+ <div class="card produk-item">
     <img src="daster1.jpeg">
     <p>Daster 1</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 50.000</p>
   </div>
 
-  <div class="card">
+ <div class="card produk-item">
     <img src="daster2.jpeg">
     <p>Daster 2</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 50.000</p>
   </div>
 
-  <div class="card">
+  <div class="card produk-item">
     <img src="daster3.jpeg">
     <p>Daster 3</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 50.000</p>
   </div>
 
-  <div class="card">
+  <div class="card produk-item">
     <img src="daster4.jpeg">
     <p>Daster 4</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 50.000</p>
   </div>
 
-  <div class="card">
+  <div class="card produk-item">
     <img src="daster5.jpeg">
     <p>Daster 5</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 50.000</p>
   </div>
 
-  <div class="card">
+  <div class="card produk-item">
     <img src="daster6.jpeg">
     <p>Daster 6</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 50.000</p>
   </div>
-  <div class="card">
+ <div class="card produk-item">
     <img src="daster7.jpeg">
     <p>Daster 7</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 45.000</p>
   </div>
-  <div class="card">
+  <div class="card produk-item">
     <img src="daster8.jpeg">
     <p>Daster 8</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 45.000</p>
   </div>
-  <div class="card">
+ <div class="card produk-item">
     <img src="daster9.jpeg">
     <p>Daster 9</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 45.000</p>
   </div>
-  <div class="card">
+ <div class="card produk-item">
     <img src="daster10.jpeg">
     <p>Daster 10</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 45.000</p>
@@ -1312,37 +1745,37 @@ h2{
 
 <div class="kategori">
 
-  <div class="card">
+  <div class="card produk-item">
     <img src="tunik1.jpeg">
     <p>Tunik 1</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 99.000</p>
   </div>
 
-  <div class="card">
+ <div class="card produk-item">
     <img src="tunik2.jpeg">
     <p>Tunik 2</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 115.000</p>
   </div>
 
-  <div class="card">
+ <div class="card produk-item">
     <img src="tunik3.jpeg">
     <p>Tunik 3</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 89.000</p>
   </div>
 
-  <div class="card">
+ <div class="card produk-item">
     <img src="tunik4.jpeg">
     <p>Tunik 4</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 120.000</p>
   </div>
 
-  <div class="card">
+  <div class="card produk-item">
     <img src="tunik5.jpeg">
     <p>Tunik 5</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 135.000</p>
   </div>
 
-  <div class="card">
+ <div class="card produk-item">
     <img src="tunik6.jpeg">
     <p>Tunik 6</p>
     <p style="color:#ff1493;font-weight:bold;">Rp 150.000</p>
@@ -1402,13 +1835,41 @@ h2{
   <p>Untuk melihat koleksi terbaru dan update produk, silakan kunjungi Facebook kami atau hubungi langsung melalui WhatsApp yang tersedia di website ini.</p>
 </div>
 
-<div class="maps">
-  <h2>Lokasi</h2>
-  <iframe src="https://maps.google.com/maps?q=prabumulih&t=&z=13&ie=UTF8&iwloc=&output=embed" width="100%" height="300"></iframe>
+<!-- ========================= -->
+<!-- LOKASI TOKO -->
+<!-- ========================= -->
+
+<div class="maps-section">
+
+  <h2>📍 Lokasi Toko</h2>
+
+  <p>
+    Jl. Beringin No.1, Anak Petai,<br>
+    Kec. Prabumulih Utara,<br>
+    Kota Prabumulih, Sumatera Selatan
+  </p>
+
+  <div class="maps-container">
+
+    <iframe
+      src="https://maps.google.com/maps?q=Jl.%20Beringin%20No.1%20Prabumulih&t=&z=15&ie=UTF8&iwloc=&output=embed"
+      loading="lazy"
+      allowfullscreen>
+    </iframe>
+
+  </div>
+
+  <a
+    href="https://www.google.com/maps/place/Jl.+Beringin+No.1,+Anak+Petai,+Kec.+Prabumulih+Utara,+Kota+Prabumulih,+Sumatera+Selatan+31121/"
+    target="_blank"
+    class="maps-btn">
+
+    📍 Buka di Google Maps
+
+  </a>
+
 </div>
 
-<a class="wa" href="https://wa.me/6288706979521">WA</a>
-<a class="fb" href="https://facebook.com/nirta.birhap.9">FB</a>
 
 <div class="footer">© 2026 N'B'O PRABUMULIH</div>
 
