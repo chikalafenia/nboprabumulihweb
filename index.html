@@ -1222,6 +1222,244 @@ h2{
 
 }
 
+/* ========================= */
+/* HEADER FULL WIDTH CLEAN */
+/* ========================= */
+
+.top-header{
+
+  width:100%;
+
+  margin:0;
+  padding:12px 0;
+
+  text-align:center;
+
+  background:linear-gradient(
+    135deg,
+    #ff1493,
+    #ff4da6
+  );
+
+  color:white;
+
+  font-weight:bold;
+
+  letter-spacing:1px;
+
+  font-size:16px;
+
+  box-shadow:0 4px 15px rgba(0,0,0,0.08);
+
+}
+
+/* ========================= */
+/* FOOTER MODERN CLEAN */
+/* ========================= */
+
+.bottom-footer{
+
+  width:100%;
+
+  margin:0;
+
+  padding:15px 10px;
+
+  text-align:center;
+
+  background:#111;
+
+  color:#fff;
+
+  font-size:14px;
+
+  letter-spacing:0.5px;
+
+  margin-top:40px;
+
+}
+
+/* ========================= */
+/* HEADER GRADIENT ANIMASI */
+/* ========================= */
+
+.top-header{
+
+  width:100%;
+
+  overflow:hidden;
+
+  padding:10px 0;
+
+  text-align:center;
+
+  color:white;
+
+  font-weight:bold;
+
+  font-size:15px;
+
+  background:linear-gradient(
+    -45deg,
+    #ff1493,
+    #ff4da6,
+    #ff85c1,
+    #ff2e88
+  );
+
+  background-size:400% 400%;
+
+  animation:gradientMove 6s ease infinite;
+
+  box-shadow:0 4px 15px rgba(0,0,0,0.1);
+
+}
+
+/* ANIMASI GRADIENT */
+
+@keyframes gradientMove{
+
+  0%{
+    background-position:0% 50%;
+  }
+
+  50%{
+    background-position:100% 50%;
+  }
+
+  100%{
+    background-position:0% 50%;
+  }
+
+}
+
+/* ========================= */
+/* MARQUEE HALUS */
+/* ========================= */
+
+.marquee{
+
+  white-space:nowrap;
+
+  overflow:hidden;
+
+  position:relative;
+
+}
+
+.marquee span{
+
+  display:inline-block;
+
+  padding-left:100%;
+
+  animation:scrollText 12s linear infinite;
+
+}
+
+/* ANIMASI TEKS BERGERAK */
+
+@keyframes scrollText{
+
+  0%{
+    transform:translateX(0);
+  }
+
+  100%{
+    transform:translateX(-100%);
+  }
+
+}
+
+/* ========================= */
+/* FOOTER PINK MODERN */
+/* ========================= */
+
+.bottom-footer{
+
+  width:100%;
+
+  padding:18px 10px;
+
+  text-align:center;
+
+  color:white;
+
+  font-size:14px;
+
+  letter-spacing:0.5px;
+
+  margin-top:40px;
+
+  /* INI ALAS PINK */
+  background:linear-gradient(
+    135deg,
+    #ff1493,
+    #ff4da6,
+    #ff85c1
+  );
+
+  box-shadow:0 -5px 20px rgba(255,20,147,0.25);
+
+}
+
+/* ========================= */
+/* MENU SCROLL HORIZONTAL */
+/* ========================= */
+
+.menu-scroll{
+
+  display:flex;
+
+  gap:15px;
+
+  overflow-x:auto;
+
+  white-space:nowrap;
+
+  padding:5px 0;
+
+  scrollbar-width:none; /* Firefox */
+
+}
+
+/* hilangkan scrollbar Chrome */
+.menu-scroll::-webkit-scrollbar{
+  display:none;
+}
+
+/* STYLE LINK */
+.menu-scroll a{
+
+  flex:0 0 auto;
+
+  text-decoration:none;
+
+  color:#444;
+
+  font-weight:600;
+
+  font-size:15px;
+
+  padding:8px 15px;
+
+  border-radius:25px;
+
+  background:#f7f7f7;
+
+  transition:0.3s;
+
+}
+
+/* hover */
+.menu-scroll a:hover{
+
+  background:#ff4da6;
+
+  color:white;
+
+}
+
 /* RESPONSIVE */
 
 @media(max-width:768px){
@@ -1439,7 +1677,11 @@ h2{
 </div>
 
 
-<header>Welcome To N'B'O PRABUMULIH</header>
+<header class="top-header">
+  <div class="marquee">
+    <span>✨ Welcome To N'B'O PRABUMULIH • Fashion Wanita Modern & Muslimah • Promo Terbaru Setiap Hari 💖 • Gratis Konsultasi Style ✨</span>
+  </div>
+</header>
 
 
 <nav class="navbar-clean">
@@ -1458,19 +1700,17 @@ h2{
   <!-- MENU -->
   <div class="nav-menu" id="menu">
 
+  <div class="menu-scroll">
+
     <a href="#">Beranda</a>
     <a href="#kategori">Kategori</a>
     <a href="#about">Tentang</a>
-
-    <a href="https://wa.me/6288706979521" target="_blank" class="nav-wa">
-      💬 WhatsApp
-    </a>
-
-    <a href="https://facebook.com/nirta.birhap.9" target="_blank" class="nav-fb">
-      📘 Facebook
-    </a>
+    <a href="https://wa.me/6288706979521">WhatsApp</a>
+    <a href="https://facebook.com/nirta.birhap.9">Facebook</a>
 
   </div>
+
+</div>
 
 </nav>
 
@@ -1871,7 +2111,8 @@ h2{
 </div>
 
 
-<div class="footer">© 2026 N'B'O PRABUMULIH</div>
-
+<footer class="bottom-footer">
+  <p>© 2026 N'B'O PRABUMULIH • All Rights Reserved</p>
+</footer>
 </body>
 </html>
