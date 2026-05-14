@@ -1549,56 +1549,237 @@ h2{
   .maps-btn{
     width:90%;
   }
-/* SEARCH */
 
-.search-box{
+/* ========================= */
+/* SEARCH PREMIUM MARKETPLACE */
+/* ========================= */
+
+.search-wrapper{
+
   width:100%;
+
   display:flex;
   justify-content:center;
-  margin:30px 0;
+
+  padding:25px 20px;
+
+  background:transparent;
+
 }
 
-.search-box input{
-  width:60%;
-  max-width:500px;
+/* BOX SEARCH */
 
-  padding:15px 20px;
+.search-box{
+
+  width:100%;
+  max-width:1000px;
+
+  height:65px;
+
+  display:flex;
+  align-items:center;
+
+  background:white;
+
+  border-radius:60px;
+
+  overflow:hidden;
+
+  box-shadow:
+  0 10px 30px rgba(0,0,0,0.08),
+  0 3px 10px rgba(255,20,147,0.08);
+
+  border:2px solid #ffe0ef;
+
+  transition:0.3s ease;
+
+}
+
+/* EFFECT FOCUS */
+
+.search-box:focus-within{
+
+  transform:translateY(-2px);
+
+  border-color:#ff4da6;
+
+  box-shadow:
+  0 15px 35px rgba(255,20,147,0.18);
+
+}
+
+/* ICON */
+
+.search-icon{
+
+  width:70px;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  font-size:24px;
+
+  color:#ff1493;
+
+}
+
+/* INPUT */
+
+.search-box input{
+
+  flex:1;
+
+  height:100%;
 
   border:none;
-  border-radius:40px;
 
   outline:none;
 
+  background:transparent;
+
+  font-size:18px;
+
+  color:#333;
+
+  padding-right:10px;
+
+}
+
+/* PLACEHOLDER */
+
+.search-box input::placeholder{
+
+  color:#aaa;
+
+  font-size:17px;
+
+}
+
+/* BUTTON */
+
+.search-btn{
+
+  height:100%;
+
+  padding:0 40px;
+
+  border:none;
+
+  cursor:pointer;
+
   font-size:16px;
 
-  box-shadow:0 4px 15px rgba(0,0,0,0.1);
+  font-weight:bold;
 
-  background:white;
+  color:white;
+
+  background:linear-gradient(
+    135deg,
+    #ff1493,
+    #ff4da6
+  );
+
+  transition:0.3s;
+
 }
 
-/* HP */
+/* HOVER */
+
+.search-btn:hover{
+
+  filter:brightness(1.05);
+
+}
+
+/* ========================= */
+/* RESPONSIVE HP */
+/* ========================= */
+
 @media(max-width:768px){
 
+  .search-wrapper{
+
+    padding:15px 12px;
+
+  }
+
+  .search-box{
+
+    height:55px;
+
+    border-radius:20px;
+
+  }
+
+  .search-icon{
+
+    width:50px;
+
+    font-size:18px;
+
+  }
+
   .search-box input{
-    width:90%;
+
     font-size:14px;
+
+  }
+
+  .search-box input::placeholder{
+
+    font-size:14px;
+
+  }
+
+  .search-btn{
+
+    padding:0 18px;
+
+    font-size:13px;
+
   }
 
 }
-@keyframes fadeProduk{
 
-  from{
-    opacity:0;
-    transform:scale(0.9);
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+  .search-wrapper{
+
+    padding:12px;
+
+    top:65px;
+
   }
 
-  to{
-    opacity:1;
-    transform:scale(1);
+  .search-box{
+
+    border-radius:18px;
+
+  }
+
+  .search-box input{
+
+    font-size:14px;
+
+    padding:14px 10px;
+
+  }
+
+  .search-btn{
+
+    padding:14px 18px;
+
+    font-size:13px;
+
   }
 
 }
+
 }
+
 </style>
 </head>
 <body>
@@ -1658,17 +1839,28 @@ h2{
 
 </nav>
 
-</nav>
 
 <!-- SEARCH -->
-<div class="search-box">
+<div class="search-wrapper">
 
-  <input 
-    type="text"
-    id="searchInput"
-    placeholder="Cari produk..."
-    onkeyup="cariProduk()"
-  >
+  <div class="search-box">
+
+    <div class="search-icon">
+      🔍
+    </div>
+
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="Cari produk fashion favorit..."
+      onkeyup="cariProduk()"
+    >
+
+    <button class="search-btn" onclick="cariProduk()">
+      Cari
+    </button>
+
+  </div>
 
 </div>
 
