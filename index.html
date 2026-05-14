@@ -1403,63 +1403,6 @@ h2{
 
 }
 
-/* ========================= */
-/* MENU SCROLL HORIZONTAL */
-/* ========================= */
-
-.menu-scroll{
-
-  display:flex;
-
-  gap:15px;
-
-  overflow-x:auto;
-
-  white-space:nowrap;
-
-  padding:5px 0;
-
-  scrollbar-width:none; /* Firefox */
-
-}
-
-/* hilangkan scrollbar Chrome */
-.menu-scroll::-webkit-scrollbar{
-  display:none;
-}
-
-/* STYLE LINK */
-.menu-scroll a{
-
-  flex:0 0 auto;
-
-  text-decoration:none;
-
-  color:#444;
-
-  font-weight:600;
-
-  font-size:15px;
-
-  padding:8px 15px;
-
-  border-radius:25px;
-
-  background:#f7f7f7;
-
-  transition:0.3s;
-
-}
-
-/* hover */
-.menu-scroll a:hover{
-
-  background:#ff4da6;
-
-  color:white;
-
-}
-
 /* RESPONSIVE */
 
 @media(max-width:768px){
@@ -1692,6 +1635,14 @@ h2{
     <span>N'B'O PRABUMULIH</span>
   </div>
 
+  <nav class="navbar-clean">
+
+  <!-- LOGO -->
+  <div class="nav-logo">
+    <img src="logo.jpeg" alt="Logo">
+    <span>N'B'O PRABUMULIH</span>
+  </div>
+
   <!-- HAMBURGER (HP) -->
   <div class="hamburger" onclick="toggleMenu()">
     ☰
@@ -1700,17 +1651,21 @@ h2{
   <!-- MENU -->
   <div class="nav-menu" id="menu">
 
-  <div class="menu-scroll">
-
     <a href="#">Beranda</a>
     <a href="#kategori">Kategori</a>
     <a href="#about">Tentang</a>
-    <a href="https://wa.me/6288706979521">WhatsApp</a>
-    <a href="https://facebook.com/nirta.birhap.9">Facebook</a>
+
+    <a href="https://wa.me/6288706979521" target="_blank" class="nav-wa">
+      💬 WhatsApp
+    </a>
+
+    <a href="https://facebook.com/nirta.birhap.9" target="_blank" class="nav-fb">
+      📘 Facebook
+    </a>
 
   </div>
 
-</div>
+</nav>
 
 </nav>
 
